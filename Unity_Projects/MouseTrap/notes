@@ -1,5 +1,7 @@
 Mouse Trap Game Dev Notes
 
+2/16
+
 Intent is to clone game I played on cool math games .com when I was younger
 
 A mouse spawns in the middle of a grid of hexagons. The user can select a hexagon on the 
@@ -37,15 +39,27 @@ For the map, need to consider best move...
         - Functions:
             - Clicked
 
-    Not sure if this is a "hacky" way to do this, but I made a "main" object in my hierarchy and put the mouse underneath it. 
-    then I attached a manager.cs script that will be responsible for placing the map hexes and mouse. I just feel like I need a driver 
-    scirpt that isn't related to either entity
+Not sure if this is a "hacky" way to do this, but I made a "main" object in my hierarchy and put the mouse underneath it. 
+then I attached a manager.cs script that will be responsible for placing the map hexes and mouse. I just feel like I need a driver 
+scirpt that isn't related to either entity
 
-    Stole some old code to instantiate the map hexes on start -- remembered that uninitialized variables (like gameobject prefabs) 
-    can be clicked and dragged into the property editory in unity after they are declared in c#
+Stole some old code to instantiate the map hexes on start -- remembered that uninitialized variables (like gameobject prefabs) 
+can be clicked and dragged into the property editory in unity after they are declared in c#
 
-    Sprite edges were kinda fuzzy - played with the sprites some to try to alliviate
+Sprite edges were kinda fuzzy - played with the sprites some to try to alliviate
 
-    Accidentally found an algorithm that generates a hex grid -- stole it and repurposed
+Accidentally found an algorithm that generates a hex grid -- stole it and repurposed
 
-    Added colliders and hit detection code to the prefab
+Added colliders and hit detection code to the prefab
+
+multiple options for the mouse - 
+	* save locstion of each hex center?
+	* have mouse sprite separated from mouse AI. sprite could be in the hex obj
+	* do it the mathy way and calc next location
+
+Game Ideas:
+	* Levels, i.e. 1,2,3...15
+	* Early levels have some hexes already black
+  * Later levels multiple mice
+
+2/17
