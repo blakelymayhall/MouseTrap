@@ -1,0 +1,51 @@
+Mouse Trap Game Dev Notes
+
+Intent is to clone game I played on cool math games .com when I was younger
+
+A mouse spawns in the middle of a grid of hexagons. The user can select a hexagon on the 
+grid and it will raise a barrier. Goal is to stop the mouses escape off the grid
+
+Components that will need programmed:
+
+    Mouse AI
+    Map
+    User-Click Action
+    Win/Lose Scenario
+    Menus 
+
+I'm going to actually make some notes this time so that I remember how to do this 
+in the future
+
+Opened Unity - See very unforgiving blank screen
+
+In lefthand pane, there is the scene hieracrchy. In here, right-click, add an empty object
+    - Made one for the mouse, will give it life later with a sprite and scripting
+
+For the map, need to consider best move...
+    Use prefab? Probably. 
+
+    A prefab, IIRC, is like a template gameobject that can be instantiated multiple times 
+
+    Attached a sprite renderer (picture of a hexagon) and a script to the prefab
+
+    Plans:
+        - Some outside scripting (on-load) will instantiate many MapHex's in their correct locations 
+        - Fields/Parameters:
+            - isClicked
+            - isMouseOn
+            - isEdge?
+        - Functions:
+            - Clicked
+
+    Not sure if this is a "hacky" way to do this, but I made a "main" object in my hierarchy and put the mouse underneath it. 
+    then I attached a manager.cs script that will be responsible for placing the map hexes and mouse. I just feel like I need a driver 
+    scirpt that isn't related to either entity
+
+    Stole some old code to instantiate the map hexes on start -- remembered that uninitialized variables (like gameobject prefabs) 
+    can be clicked and dragged into the property editory in unity after they are declared in c#
+
+    Sprite edges were kinda fuzzy - played with the sprites some to try to alliviate
+
+    Accidentally found an algorithm that generates a hex grid -- stole it and repurposed
+
+    Added colliders and hit detection code to the prefab
