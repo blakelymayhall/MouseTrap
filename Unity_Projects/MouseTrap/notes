@@ -60,6 +60,24 @@ multiple options for the mouse -
 Game Ideas:
 	* Levels, i.e. 1,2,3...15
 	* Early levels have some hexes already black
-  * Later levels multiple mice
+    * Later levels multiple mice
 
 2/17
+
+Considering starting on Mouse today. 
+
+Spanws at 0,0 hex, and needs to do the following:
+
+    1) determine POSSIBLE moves 
+        see above possilbe methods. Another possible method is sending rays at angles and fetching the GO we hit?
+        Impossible move == black hex, other mouse(?)
+    2) AI best move
+        tmeporarily just pick a random move
+
+2/18 
+
+Got a lot done
+
+made function to find pssible moves. added a circle collider around the mouse just big enough to hit all hexes arund it
+established the random movement for now while i figure out the AI
+established some code to (initially) handle winning and losing
