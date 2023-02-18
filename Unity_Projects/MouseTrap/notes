@@ -81,3 +81,12 @@ Got a lot done
 made function to find pssible moves. added a circle collider around the mouse just big enough to hit all hexes arund it
 established the random movement for now while i figure out the AI
 established some code to (initially) handle winning and losing
+
+TODO:
+    * Change colliders on hex's to circles for better fit
+    * Fix bug, Mouse doesn't move sometimes on first click? 
+    * Enable Mouse to go off screen (to win)
+    * You Win / You Lose Message w/ Restart Button
+    * Start game button 
+    * Mouse AI 
+    * Level's / Progression, Two mice two clicks, variable map size
