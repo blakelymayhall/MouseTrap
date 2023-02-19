@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class manager : MonoBehaviour
+public class Manager : MonoBehaviour
 {
     /* PUBLIC VARS */
     //*************************************************************************
     public GameObject mapHex_Prefab;
-    [System.NonSerialized]
+    public GameObject mouse_Prefab;
+
+    public bool userTurn;
+    public bool mouseWin;
+    public bool userWin;
+
     public int Radius = 5;
     //*************************************************************************
 
@@ -19,26 +24,45 @@ public class manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Can this definition be within a map.c script inside the map folder? 
         GenerateMap();
+
+        // Spawn mouse -- can this definition be from mouse.c?
+        SpawnMouse();
+
+        // User's turn first
+        userTurn = true;
+        mouseWin = false;
+        userWin  = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    void SpawnMouse()
+    {
+        // Make first hex @ origin
+        Vector3 spawnPosition = new Vector3(0f, 0f, -1f);
+        GameObject mouse = Instantiate(mouse_Prefab, spawnPosition,
+            Quaternion.identity, GetComponent<Transform>());
+        mouse.name = "Mouse";
     }
 
     void GenerateMap()
     {
         // Make first hex @ origin
         Vector3 spawnPosition = new Vector3(0f, 0f, 0f);
-        GameObject originHex = Instantiate(mapHex_Prefab, spawnPosition, Quaternion.identity,
-            GetComponent<Transform>());
-        originHex.tag = "Hex";
+        GameObject originHex = Instantiate(mapHex_Prefab, spawnPosition,
+            Quaternion.identity, GetComponent<Transform>());
         originHex.name = "Hex";
 
         /*
-            Code stolen from: https://www.codeproject.com/Articles/1249665/Generation-of-a-hexagonal-tessellation
+        Code stolen from:
+        https://www.codeproject.com/
+        Articles/1249665/Generation-of-a-hexagonal-tessellation
         */
 
         //Spawn scheme: nDR, nDX, nDL, nUL, nUX, End??, UX, nUR
@@ -51,12 +75,25 @@ public class manager : MonoBehaviour
             new Vector3(1.5f,sq3*0.5f, 0)         //UR
         };
 
-        int lmv = mv.Length;
-        float HexSide = mapHex_Prefab.transform.localScale.x*2.8f; // 2.8f found experimentally
-                                                                   // would need to change when sprite changes
-                                                                   // or maybe even screen?;
-        Vector3 currentPoint = new Vector3(0f, 0f, 0f);
 
+        // 2.8f found experimentally
+        // would need to change when sprite changes
+        // or maybe even screen?;
+        int lmv = mv.Length;
+        float HexSide = mapHex_Prefab.transform.localScale.x*2.8f; 
+                                                                   
+                                                                   
+        // Make counter and calc. when on final radius to apply .isEdge param
+        // in MapHex
+        int counter = 1;
+        int edgeBegins = 1;
+        for(int ii = 1; ii < Radius; ii++)
+        {
+            edgeBegins += 6 * ii;
+        }
+
+        // Exec algorithm 
+        Vector3 currentPoint = new Vector3(0f, 0f, 0f);
         for (int mult = 0; mult <= Radius; mult++)
         {
             for (int j = 0; j < lmv; j++)
@@ -64,18 +101,28 @@ public class manager : MonoBehaviour
                 for (int i = 0; i < mult; i++)
                 {
                     currentPoint += (mv[j] * HexSide);
-                    GameObject h = Instantiate(mapHex_Prefab, currentPoint, mapHex_Prefab.transform.rotation, transform);
-                    h.tag = "Hex";
+                    GameObject h = Instantiate(mapHex_Prefab, currentPoint,
+                        mapHex_Prefab.transform.rotation, transform);
                     h.name = "Hex";
+                    counter++;
+                    if (counter >= edgeBegins)
+                    {
+                        h.GetComponent<MapHex>().isEdge = true;
+                    }
                 }
                 if (j == 4)
                 {
                     if (mult == Radius)
                         break;      //Finished
                     currentPoint += (mv[j] * HexSide);
-                    GameObject h = Instantiate(mapHex_Prefab, currentPoint, mapHex_Prefab.transform.rotation, transform);
-                    h.tag = "Hex";
+                    GameObject h = Instantiate(mapHex_Prefab, currentPoint,
+                        mapHex_Prefab.transform.rotation, transform);
                     h.name = "Hex";
+                    counter++;
+                    if (counter >= edgeBegins)
+                    {
+                        h.GetComponent<MapHex>().isEdge = true;
+                    }
                 }
             }
         }

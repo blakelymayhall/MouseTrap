@@ -36,7 +36,6 @@ public class Mouse : MonoBehaviour
             {
                 DebugMoveToRandomHex();
                 GetComponent<CircleCollider2D>().radius = 1e-2f;
-
                 //Handle Mouse Win Condition 
                 manager.userTurn = true;
             }
@@ -81,7 +80,8 @@ public class Mouse : MonoBehaviour
     void DebugMoveToRandomHex()
     {
         chosenHex = Random.Range(0, possibleMoves.Count);
-        transform.position = possibleMoves[chosenHex].transform.position;
+        transform.position = possibleMoves[chosenHex].transform.position +
+            Vector3.back;
     }
 
     // Check list to see if it is empty - if so,
