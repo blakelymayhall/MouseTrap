@@ -153,8 +153,11 @@ public class LoadGame : MonoBehaviour
             node.Id = Guid.NewGuid();
             node.Point = point;
             //node.Connections =
-            */
+            
         }
+
+
+            */
 
         //manager.graphHexes.StartNode =
         //manager.graphHexes.EndNode =
