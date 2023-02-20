@@ -83,10 +83,12 @@ established the random movement for now while i figure out the AI
 established some code to (initially) handle winning and losing
 
 TODO:
-    * Change colliders on hex's to circles for better fit
-    * Fix bug, Mouse doesn't move sometimes on first click? 
+    * Change colliders on hex's to circles for better fit      - done
+    * Fix bug, Mouse doesn't move sometimes on first click?    - investigate - cannot reproduce quickly
+    * Fix bug, Mouse doesn't move sometimes at all?
     * Enable Mouse to go off screen (to win)
     * You Win / You Lose Message w/ Restart Button
-    * Start game button 
+    * Start game button                                        - done
     * Mouse AI 
     * Level's / Progression, Two mice two clicks, variable map size
+    * animation, mouse rigid body movement, hexes animate up as towers

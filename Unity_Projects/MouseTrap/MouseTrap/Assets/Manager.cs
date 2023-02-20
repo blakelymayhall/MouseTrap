@@ -6,30 +6,26 @@ public class Manager : MonoBehaviour
 {
     /* PUBLIC VARS */
     //*************************************************************************
-    public GameObject mapHex_Prefab;
-    public GameObject mouse_Prefab;
+    [System.NonSerialized]
+    public GameObject mouse;
+    [System.NonSerialized]
+    public List<GameObject> mapHexes = new List<GameObject>();
+    [System.NonSerialized]
+    public Graph graphHexes;
 
     public bool userTurn;
     public bool mouseWin;
     public bool userWin;
-
-    public int Radius = 5;
     //*************************************************************************
 
     /* PRIVATE VARS */
     //*************************************************************************
-    private const float sq3 = 1.7320508075688772935274463415059F;
+
     //*************************************************************************
 
     // Start is called before the first frame update
     void Start()
     {
-        // Can this definition be within a map.c script inside the map folder? 
-        GenerateMap();
-
-        // Spawn mouse -- can this definition be from mouse.c?
-        SpawnMouse();
-
         // User's turn first
         userTurn = true;
         mouseWin = false;
@@ -42,89 +38,51 @@ public class Manager : MonoBehaviour
 
     }
 
-    void SpawnMouse()
+    public List<MapHex> GetAdjacentHexes(GameObject originObject,
+        float nominalColliderRadius,
+        float expandedColliderRadius)
     {
-        // Make first hex @ origin
-        Vector3 spawnPosition = new Vector3(0f, 0f, -1f);
-        GameObject mouse = Instantiate(mouse_Prefab, spawnPosition,
-            Quaternion.identity, GetComponent<Transform>());
-        mouse.name = "Mouse";
-    }
+        List<MapHex> adjacentHexes = new List<MapHex>();
 
-    void GenerateMap()
-    {
-        // Make first hex @ origin
-        Vector3 spawnPosition = new Vector3(0f, 0f, 0f);
-        GameObject originHex = Instantiate(mapHex_Prefab, spawnPosition,
-            Quaternion.identity, GetComponent<Transform>());
-        originHex.name = "Hex";
+        // Grow circle collider so it can find adjacent hexes
+        originObject.GetComponent<CircleCollider2D>().radius =
+            expandedColliderRadius;
 
-        /*
-        Code stolen from:
-        https://www.codeproject.com/
-        Articles/1249665/Generation-of-a-hexagonal-tessellation
-        */
+        // Get list of overlapping colliders
+        List<Collider2D> results = new List<Collider2D>();
+        ContactFilter2D contactFilter = new ContactFilter2D();
+        originObject.GetComponent<CircleCollider2D>().
+            OverlapCollider(contactFilter.NoFilter(), results);
 
-        //Spawn scheme: nDR, nDX, nDL, nUL, nUX, End??, UX, nUR
-        Vector3[] mv = {
-            new Vector3(1.5f,-sq3*0.5f, 0),       //DR
-            new Vector3(0,-sq3, 0),               //DX
-            new Vector3(-1.5f,-sq3*0.5f, 0),      //DL
-            new Vector3(-1.5f,sq3*0.5f, 0),       //UL
-            new Vector3(0,sq3, 0),                //UX
-            new Vector3(1.5f,sq3*0.5f, 0)         //UR
-        };
-
-
-        // 2.8f found experimentally
-        // would need to change when sprite changes
-        // or maybe even screen?;
-        int lmv = mv.Length;
-        float HexSide = mapHex_Prefab.transform.localScale.x*2.8f; 
-                                                                   
-                                                                   
-        // Make counter and calc. when on final radius to apply .isEdge param
-        // in MapHex
-        int counter = 1;
-        int edgeBegins = 1;
-        for(int ii = 1; ii < Radius; ii++)
+        foreach (Collider2D result in results)
         {
-            edgeBegins += 6 * ii;
-        }
+            // Check if the circle collider is overlapping a collider
+            // belonging to a hex
 
-        // Exec algorithm 
-        Vector3 currentPoint = new Vector3(0f, 0f, 0f);
-        for (int mult = 0; mult <= Radius; mult++)
-        {
-            for (int j = 0; j < lmv; j++)
+            // then check to make sure it is not the hex the mouse is currently
+            // on
+
+            // then check to make sure the hex isn't clicked
+
+            bool isHex = result.transform.name == "Hex";
+            bool isAdjacent = (result.transform.position - transform.position)
+                .magnitude > 1e-2f;
+
+            if (isHex && isAdjacent)
             {
-                for (int i = 0; i < mult; i++)
+                MapHex mapHex = result.GetComponentInParent<MapHex>();
+                if (!mapHex.isClicked)
                 {
-                    currentPoint += (mv[j] * HexSide);
-                    GameObject h = Instantiate(mapHex_Prefab, currentPoint,
-                        mapHex_Prefab.transform.rotation, transform);
-                    h.name = "Hex";
-                    counter++;
-                    if (counter >= edgeBegins)
-                    {
-                        h.GetComponent<MapHex>().isEdge = true;
-                    }
-                }
-                if (j == 4)
-                {
-                    if (mult == Radius)
-                        break;      //Finished
-                    currentPoint += (mv[j] * HexSide);
-                    GameObject h = Instantiate(mapHex_Prefab, currentPoint,
-                        mapHex_Prefab.transform.rotation, transform);
-                    h.name = "Hex";
-                    counter++;
-                    if (counter >= edgeBegins)
-                    {
-                        h.GetComponent<MapHex>().isEdge = true;
-                    }
+                    adjacentHexes.Add(mapHex);
                 }
             }
         }
+
+        // Shrink circle collider so mouse cannot strike it instead of
+        // a hex
+        originObject.GetComponent<CircleCollider2D>().radius =
+            nominalColliderRadius;
+
+        return adjacentHexes;
     }
 }

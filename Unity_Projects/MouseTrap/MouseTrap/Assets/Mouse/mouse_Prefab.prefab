@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 398c7e03051474b38924d21d8f9643e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mouse_Prefab: {fileID: 7427700445307202576}
   possibleMoves: []
   chosenHex: 0
 --- !u!58 &3289648396556000105

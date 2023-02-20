@@ -8,12 +8,13 @@ public class Mouse : MonoBehaviour
     //*************************************************************************
     public List<MapHex> possibleMoves = new List<MapHex>();
     public int chosenHex;
+
+    public const float expandedColliderRadius = 8.175106f;
     //*************************************************************************
 
     /* PRIVATE VARS */
     //*************************************************************************
     private Manager manager;
-    private float mouseColliderRadius = 8.175106f;
     //*************************************************************************
 
 
@@ -26,66 +27,33 @@ public class Mouse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        possibleMoves.Clear();
+        // Disallow mouse movement unless its the mouse's turn
         if (!manager.userTurn)
-        { 
-            GetComponent<CircleCollider2D>().radius = mouseColliderRadius;
-            GetPossibleMoves();
+        {
+            possibleMoves = manager.GetAdjacentHexes(transform.gameObject,
+                1e-2f, expandedColliderRadius);
             CheckLostCondition();
+
             if (!manager.userWin)
             {
                 DebugMoveToRandomHex();
-                GetComponent<CircleCollider2D>().radius = 1e-2f;
-                //Handle Mouse Win Condition 
+                //Handle Mouse Win Condition ();
                 manager.userTurn = true;
             }
         }
     }
 
-    // Finds all adjacent hexes
-    void GetPossibleMoves()
-    {
-        List<Collider2D> results = new List<Collider2D>();
-        ContactFilter2D contactFilter = new ContactFilter2D();
-        GetComponent<CircleCollider2D>().
-            OverlapCollider(contactFilter.NoFilter(), results);
-
-        foreach(Collider2D result in results)
-        {
-            // Check if the circle collider is overlapping a collider
-            // belonging to a hex
-
-            // then check to make sure it is not the hex the mouse is currently
-            // on
-
-            // then check to make sure the hex isn't clicked
-
-            bool isHex = result.transform.name == "Hex";
-            bool isAdjacent = (result.transform.position - transform.position)
-                .magnitude > 1e-2f;
-            
-            if (isHex && isAdjacent)
-            {
-                MapHex mapHex = result.GetComponentInParent<MapHex>();
-                if (!mapHex.isClicked)
-                {
-                    possibleMoves.Add(mapHex);
-                }
-            }
-        }
-    }
-
     // Temp. Random Movement Until I make AI
-    // force move to winning hex 
     void DebugMoveToRandomHex()
     {
         chosenHex = Random.Range(0, possibleMoves.Count);
         transform.position = possibleMoves[chosenHex].transform.position +
             Vector3.back;
+        possibleMoves.Clear();
     }
 
     // Check list to see if it is empty - if so,
-    // the mouse lost
+    // the mouse lost and disallow trying to move 
     void CheckLostCondition()
     {
         if (possibleMoves.Count == 0)
@@ -93,5 +61,6 @@ public class Mouse : MonoBehaviour
             manager.userWin = true;
         }
     }
+
 
 }

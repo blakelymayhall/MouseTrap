@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 464079041}
   - component: {fileID: 464079040}
+  - component: {fileID: 464079042}
   m_Layer: 0
   m_Name: main
   m_TagString: Untagged
@@ -152,8 +153,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d792bdc5e0e4049a181156dc49bf6cb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapHex_Prefab: {fileID: 2923329283395665875, guid: 3a1f32325c55a4763a34d9c4cda23003, type: 3}
-  mouse_Prefab: {fileID: 7427700445307202576, guid: d01f89950ead44ce98d73b58bfe3a6e3, type: 3}
   userTurn: 0
   mouseWin: 0
   userWin: 0
@@ -172,6 +171,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &464079042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464079039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 217a58c7d49784e8d8fac7c076db5423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapHex_Prefab: {fileID: 2923329283395665875, guid: 3a1f32325c55a4763a34d9c4cda23003, type: 3}
+  mouse_Prefab: {fileID: 7427700445307202576, guid: d01f89950ead44ce98d73b58bfe3a6e3, type: 3}
+  Radius: 5
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

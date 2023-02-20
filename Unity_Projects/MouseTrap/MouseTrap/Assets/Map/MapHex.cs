@@ -8,7 +8,10 @@ public class MapHex : MonoBehaviour
     //*************************************************************************
     public bool isClicked = false;
     public bool isMouseOn = false;          
-    public bool isEdge    = false;                 
+    public bool isEdge    = false;
+
+    public const float nominalColliderRadius = 2.340276f;
+    public const float expandedColliderRadius = 8.175106f;
     //*************************************************************************
 
     /* PRIVATE VARS */
@@ -26,9 +29,10 @@ public class MapHex : MonoBehaviour
     void Update()
     {
         CheckMouseOn();
-        CheckMouseClicked();
+        CheckForUserClick();
     }
 
+    // Checks if mouse is on the Hex 
     void CheckMouseOn()
     {
         isMouseOn = false;
@@ -39,9 +43,11 @@ public class MapHex : MonoBehaviour
         }
     }
 
-    void CheckMouseClicked()
+    // Checks if user clicked
+    void CheckForUserClick()
     {
-        // If a click was made, check if we clicked a hex
+        // If a click was made, check if we clicked a hex, if so, turn it black
+        // and flip isClicked property
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit2D hit_detected = Physics2D.Raycast(
