@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,9 +10,10 @@ public class MapHex : MonoBehaviour
     public bool isClicked = false;
     public bool isMouseOn = false;          
     public bool isEdge    = false;
+    public Node node = new Node();
 
     public const float nominalColliderRadius = 2.340276f;
-    public const float expandedColliderRadius = 8.175106f;
+    public const float expandedColliderRadius = 6f;
     //*************************************************************************
 
     /* PRIVATE VARS */
@@ -23,6 +25,13 @@ public class MapHex : MonoBehaviour
     void Start()
     {
         manager = GetComponentInParent<Manager>();
+
+        Point point = new Point();
+        point.X = transform.position.x;
+        point.Y = transform.position.y;
+
+        node.Id = Guid.NewGuid();
+        node.Point = point;
     }
 
     // Update is called once per frame
@@ -40,6 +49,7 @@ public class MapHex : MonoBehaviour
             OverlapPoint(transform.position))
         {
             isMouseOn = true;
+            manager.mouse.GetComponent<Mouse>().mouseHex = transform.gameObject;
         }
     }
 

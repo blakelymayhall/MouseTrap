@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -109,59 +108,6 @@ public class LoadGame : MonoBehaviour
                 }
             }
         }
-    }
-
-    // Create the Map data structure used in the
-    // shortest distance algorithm
-
-    // This should go in manager when you are done maybe?
-    // def. not in load game since that implies one and done 
-    void ComputeHexGraph()
-    {
-
-
-        List<Node> nodes = new List<Node>();
-        foreach (GameObject mapHex in manager.mapHexes)
-        {
-            Node node = new Node();
-
-            Point point = new Point();
-            point.X = mapHex.transform.position.x;
-            point.Y = mapHex.transform.position.y;
-
-            node.Id = Guid.NewGuid();
-            node.Point = point;
-        }
-            /*
-            // Each node has at most 6 edges
-            List<Edge> edges = new List<Edge>();
-            List<MapHex> adjacentHexes = manager.GetAdjacentHexes(mapHex,
-                MapHex.nominalColliderRadius,
-                MapHex.expandedColliderRadius);
-            foreach(MapHex adjacentHex in adjacentHexes)
-            {
-                Edge edge = new Edge();
-                edge.ConnectedNode = 
-            }
-
-            Node node = new Node();
-
-            Point point = new Point();
-            point.X = mapHex.transform.position.x;
-            point.Y = mapHex.transform.position.y;
-
-            node.Id = Guid.NewGuid();
-            node.Point = point;
-            //node.Connections =
-            
-        }
-
-
-            */
-
-        //manager.graphHexes.StartNode =
-        //manager.graphHexes.EndNode =
-        //manager.graphHexes.Nodes = 
     }
 
     // Generate the mouse

@@ -64,8 +64,8 @@ public class Node
         {
             Point = new Point
             {
-                X = rnd.NextDouble(),
-                Y = rnd.NextDouble()
+                X = (float)rnd.NextDouble(),
+                Y = (float)rnd.NextDouble()
             },
             Id = Guid.NewGuid(),
             Name = name
@@ -143,6 +143,6 @@ public class Edge
 
 public class Point
 {
-    public double X { get; set; }
-    public double Y { get; set; }
+    public float X { get; set; }
+    public float Y { get; set; }
 }

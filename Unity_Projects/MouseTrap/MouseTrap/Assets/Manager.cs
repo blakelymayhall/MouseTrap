@@ -8,10 +8,12 @@ public class Manager : MonoBehaviour
     //*************************************************************************
     [System.NonSerialized]
     public GameObject mouse;
+
     [System.NonSerialized]
     public List<GameObject> mapHexes = new List<GameObject>();
+
     [System.NonSerialized]
-    public Graph graphHexes;
+    public Graph graphHexes = new Graph();
 
     public bool userTurn;
     public bool mouseWin;
@@ -35,7 +37,6 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
     }
 
     public List<MapHex> GetAdjacentHexes(GameObject originObject,
@@ -85,4 +86,6 @@ public class Manager : MonoBehaviour
 
         return adjacentHexes;
     }
+
+
 }
