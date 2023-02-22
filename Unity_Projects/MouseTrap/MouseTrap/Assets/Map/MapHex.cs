@@ -10,7 +10,7 @@ public class MapHex : MonoBehaviour
     public bool isClicked = false;
     public bool isMouseOn = false;          
     public bool isEdge    = false;
-    public Node node = new Node();
+    public Node node      = new Node();  // used in A* shortest path algorithm
 
     public const float nominalColliderRadius = 2.340276f;
     public const float expandedColliderRadius = 6f;

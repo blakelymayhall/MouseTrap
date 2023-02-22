@@ -37,6 +37,7 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
     }
 
     public List<MapHex> GetAdjacentHexes(GameObject originObject,

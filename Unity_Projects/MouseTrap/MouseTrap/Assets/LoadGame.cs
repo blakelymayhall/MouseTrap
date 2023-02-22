@@ -41,6 +41,7 @@ public class LoadGame : MonoBehaviour
         GameObject originHex = Instantiate(mapHex_Prefab, spawnPosition,
             Quaternion.identity, GetComponent<Transform>());
         originHex.name = "Hex";
+        manager.mapHexes.Add(originHex);
 
         /*
         Code stolen from:
@@ -64,7 +65,8 @@ public class LoadGame : MonoBehaviour
         float HexSide = mapHex_Prefab.transform.localScale.x * 2.8f;
 
         // Make counter and calc. when on final radius to apply .isEdge param
-        // in MapHex
+        // in MapHex. Counter starts at one because we already made the origin
+        // hex
         int counter = 1;
         int edgeBegins = 1;
         for (int ii = 1; ii < Radius; ii++)
