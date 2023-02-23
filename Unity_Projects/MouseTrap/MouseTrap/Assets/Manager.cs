@@ -85,6 +85,7 @@ public class Manager : MonoBehaviour
         originObject.GetComponent<CircleCollider2D>().radius =
             nominalColliderRadius;
 
+
         return adjacentHexes;
     }
 

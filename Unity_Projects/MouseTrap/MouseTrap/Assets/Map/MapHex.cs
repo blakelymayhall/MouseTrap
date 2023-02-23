@@ -44,12 +44,15 @@ public class MapHex : MonoBehaviour
     // Checks if mouse is on the Hex 
     void CheckMouseOn()
     {
-        isMouseOn = false;
         if (GameObject.Find("Mouse").GetComponent<CircleCollider2D>().
             OverlapPoint(transform.position))
         {
             isMouseOn = true;
             manager.mouse.GetComponent<Mouse>().mouseHex = transform.gameObject;
+        }
+        else
+        {
+            isMouseOn = false;
         }
     }
 

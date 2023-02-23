@@ -40,26 +40,40 @@ public class Mouse : MonoBehaviour
             //CheckLostCondition();
             if (!manager.userWin)
             {
+                DebugEstablishTarget();
+                Debug.Log("---");
+                Debug.Log("TGT");
+                Debug.Log(tgtHex.transform.position.x);
+                Debug.Log(tgtHex.transform.position.y);
+                Debug.Log("--TGT");
+
                 shortestPath.Clear();
                 shortestPathCost = 0;
                 shortestPathLength = 0;
+                foreach (GameObject mapHex in manager.mapHexes)
+                {
+                    mapHex.GetComponent<MapHex>().node.MinCostToStart = null;
+                    mapHex.GetComponent<MapHex>().node.Visited = false;
+                    mapHex.GetComponent<MapHex>().node.StraightLineDistanceToEnd = 0;
+                    mapHex.GetComponent<MapHex>().node.NearestToStart = null;
+                }
 
                 ComputeHexGraph();
 
                 shortestPath = GetShortestPathAstar();
-                BlunderLogic();
+                //BlunderLogic();
                 foreach(Node tmp in shortestPath)
                 {
-                    Debug.Log("---");
+                    Debug.Log("shtp");
                     Debug.Log(tmp.Point.X);
                     Debug.Log(tmp.Point.Y);
-                    Debug.Log("---");
+                    Debug.Log("--shtp");
                 }
 
                 transform.position = new Vector3(shortestPath[0].Point.X,
                     shortestPath[0].Point.Y, transform.position.z);
 
-                CheckWinCondition();
+                //CheckWinCondition();
                 manager.userTurn = true;
             }
         }
@@ -80,7 +94,8 @@ public class Mouse : MonoBehaviour
     {
         /* SHOULD FIND BETTER WAY TO DO THIS*/
         List<GameObject> edgeList = manager.mapHexes.FindAll(mapHex =>
-            mapHex.GetComponent<MapHex>().isEdge == true);
+            mapHex.GetComponent<MapHex>().isEdge == true &&
+            !mapHex.GetComponent<MapHex>().isClicked);
 
         chosenHex = Random.Range(0, edgeList.Count);
         tgtHex = edgeList[chosenHex];
@@ -143,7 +158,6 @@ public class Mouse : MonoBehaviour
             node.StraightLineDistanceToEnd = node.StraightLineDistanceTo(manager.graphHexes.EndNode);
         }
         AstarSearch();
-        var shortestPath = new List<Node>();
         shortestPath.Add(manager.graphHexes.EndNode);
         BuildShortestPath(shortestPath, manager.graphHexes.EndNode);
         shortestPath.Reverse();
@@ -152,13 +166,24 @@ public class Mouse : MonoBehaviour
 
     void BuildShortestPath(List<Node> list, Node node)
     {
-        if (node.NearestToStart == null ||
-            node.NearestToStart.Point.X == manager.mouse.GetComponent<Mouse>().
-            mouseHex.GetComponent<MapHex>().node.Point.X)
+        Debug.Log("bsp:");
+        Debug.Log(node.Point.X);
+        Debug.Log(node.Point.Y);
+        Debug.Log("--bsp:");
+
+        if (node.NearestToStart == null)
+            return;
+        var tmp = node.Connections.
+            FirstOrDefault(x => x.ConnectedNode == node.NearestToStart);
+        if (tmp == null)
+            return;
+        shortestPathLength += tmp.Length;
+        var tmp2 = node.Connections.
+            FirstOrDefault(x => x.ConnectedNode == node.NearestToStart);
+        if (tmp == null)
             return;
         list.Add(node.NearestToStart);
-        shortestPathLength += node.Connections.FirstOrDefault(x => x.ConnectedNode == node.NearestToStart).Length;
-        shortestPathCost += node.Connections.First(x => x.ConnectedNode == node.NearestToStart).Cost;
+        shortestPathCost += tmp.Cost;
         BuildShortestPath(list, node.NearestToStart);
     }
 
