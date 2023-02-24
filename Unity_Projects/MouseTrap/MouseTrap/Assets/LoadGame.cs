@@ -9,7 +9,7 @@ public class LoadGame : MonoBehaviour
     public GameObject mapHex_Prefab;
     public GameObject mouse_Prefab;
 
-    public int Radius = 5;
+    public int mapRadius = 5;
     //*************************************************************************
 
     /* PRIVATE VARS */
@@ -68,15 +68,15 @@ public class LoadGame : MonoBehaviour
         // in MapHex. Counter starts at one because we already made the origin
         // hex
         int counter = 1;
-        int edgeBegins = 1;
-        for (int ii = 1; ii < Radius; ii++)
+        int edgeBegins = 2;
+        for (int ii = 1; ii < mapRadius; ii++)
         {
             edgeBegins += 6 * ii;
         }
 
         // Exec algorithm 
         Vector3 currentPoint = new Vector3(0f, 0f, 0f);
-        for (int mult = 0; mult <= Radius; mult++)
+        for (int mult = 0; mult <= mapRadius; mult++)
         {
             for (int j = 0; j < lmv; j++)
             {
@@ -95,7 +95,7 @@ public class LoadGame : MonoBehaviour
                 }
                 if (j == 4)
                 {
-                    if (mult == Radius)
+                    if (mult == mapRadius)
                         break;      //Finished
                     currentPoint += (mv[j] * HexSide);
                     GameObject h = Instantiate(mapHex_Prefab, currentPoint,

@@ -15,6 +15,7 @@ public class Manager : MonoBehaviour
     [System.NonSerialized]
     public Graph graphHexes = new Graph();
 
+    public int mouseBlunderPercentage = 20;
     public bool userTurn;
     public bool mouseWin;
     public bool userWin;
@@ -42,7 +43,7 @@ public class Manager : MonoBehaviour
 
     public List<MapHex> GetAdjacentHexes(GameObject originObject,
         float nominalColliderRadius,
-        float expandedColliderRadius)
+        float expandedColliderRadius, bool allowClicked = false)
     {
         List<MapHex> adjacentHexes = new List<MapHex>();
 
@@ -73,7 +74,11 @@ public class Manager : MonoBehaviour
             if (isHex && isAdjacent)
             {
                 MapHex mapHex = result.GetComponentInParent<MapHex>();
-                if (!mapHex.isClicked)
+                if (allowClicked)
+                {
+                    adjacentHexes.Add(mapHex);
+                }
+                else if(!mapHex.isClicked)
                 {
                     adjacentHexes.Add(mapHex);
                 }
@@ -88,6 +93,4 @@ public class Manager : MonoBehaviour
 
         return adjacentHexes;
     }
-
-
 }
