@@ -3,7 +3,7 @@ Mouse Trap Game Dev Notes
 2/16
 
 Intent is to clone game I played on cool math games .com when I was younger
-
+https://www.mathplayground.com/logic_trap_the_mouse.html
 A mouse spawns in the middle of a grid of hexagons. The user can select a hexagon on the 
 grid and it will raise a barrier. Goal is to stop the mouses escape off the grid
 
