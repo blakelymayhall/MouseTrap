@@ -7,10 +7,11 @@ public class MapHex : MonoBehaviour
 {
     /* PUBLIC VARS */
     //*************************************************************************
-    public bool isClicked = false;
-    public bool isMouseOn = false;          
-    public bool isEdge    = false;
-    public Node node      = new Node();  // used in A* shortest path algorithm
+    public bool isClicked    = false;
+    public bool isMouseOn    = false;
+    public bool inaccessible = false;
+    public bool isEdge       = false;
+    public Node node         = new Node();  // used in A* shortest path algorithm
 
     public const float nominalColliderRadius = 2.340276f;
     public const float expandedColliderRadius = 6f;
@@ -29,7 +30,6 @@ public class MapHex : MonoBehaviour
         Point point = new Point();
         point.X = transform.position.x;
         point.Y = transform.position.y;
-
         node.Id = Guid.NewGuid();
         node.Point = point;
     }

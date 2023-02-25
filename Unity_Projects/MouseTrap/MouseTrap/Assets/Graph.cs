@@ -25,6 +25,17 @@ public class Node
     public Point Point { get; set; }
     public List<Edge> Connections { get; set; } = new List<Edge>();
 
+    public Node ClonePoint()
+    {
+        Node node1 = new Node();
+        Point point = new Point();
+
+        point.X = Point.X;
+        point.Y = Point.Y;
+
+        node1.Point = point;
+        return node1;
+    }
     public double? MinCostToStart { get; set; }
     public Node NearestToStart { get; set; }
     public bool Visited { get; set; }

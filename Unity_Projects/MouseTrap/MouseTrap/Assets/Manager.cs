@@ -15,7 +15,11 @@ public class Manager : MonoBehaviour
     [System.NonSerialized]
     public Graph graphHexes = new Graph();
 
-    public int mouseBlunderPercentage = 20;
+    [System.NonSerialized]
+    public int mouseBlunderPercentage = 10;
+
+    public GameObject wl_menu_prefab;
+    public GameObject wl_menu;
     public bool userTurn;
     public bool mouseWin;
     public bool userWin;
@@ -23,7 +27,7 @@ public class Manager : MonoBehaviour
 
     /* PRIVATE VARS */
     //*************************************************************************
-
+    private bool wl_menu_loaded = false;
     //*************************************************************************
 
     // Start is called before the first frame update
@@ -38,7 +42,11 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (userWin || mouseWin && !wl_menu_loaded)
+        {
+            LoadWL_Menu();
+            wl_menu_loaded = true;
+        }
     }
 
     public List<MapHex> GetAdjacentHexes(GameObject originObject,
@@ -92,5 +100,16 @@ public class Manager : MonoBehaviour
 
 
         return adjacentHexes;
+    }
+
+    void LoadWL_Menu()
+    {
+        wl_menu = Instantiate(wl_menu_prefab, -3*Vector3.forward,
+                                 Quaternion.identity, GetComponent<Transform>());
+        wl_menu.name = "wl_menu";
+        wl_menu.GetComponent<Canvas>().worldCamera = Camera.main;
+        wl_menu.GetComponent<Canvas>().planeDistance = 1;
+        //wl_menu.GetComponent<RectTransform>().localScale = new Vector3(0.75f, 0.75f, 0f);
+        //wl_menu.GetComponent<RectTransform>().sizeDelta = new Vector2(0.75f, 0.75f);
     }
 }

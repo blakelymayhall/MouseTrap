@@ -7,7 +7,6 @@ public class Mouse : MonoBehaviour
 {
     /* PUBLIC VARS */
     //*************************************************************************
-    //public List<MapHex> possibleMoves = new List<MapHex>();
     public GameObject mouseHex;
     public GameObject tgtHex;
     public int chosenHex;
@@ -20,13 +19,24 @@ public class Mouse : MonoBehaviour
     //*************************************************************************
     private Manager manager;
     private List<GameObject> potentialTargetList = new List<GameObject>();
+    private bool retarget = false;
+    private int maxSearch = 6;
+    private int turnCount = 0;
     //*************************************************************************
 
 
     // Start is called before the first frame update
     void Start()
     {
+        // Attach manager object
         manager = GetComponentInParent<Manager>();
+
+        // Establish initial target 
+        potentialTargetList = manager.mapHexes.FindAll(mapHex =>
+            mapHex.GetComponent<MapHex>().isEdge == true &&
+            !mapHex.GetComponent<MapHex>().isClicked);
+        chosenHex = Random.Range(0, potentialTargetList.Count);
+        tgtHex = potentialTargetList[chosenHex];
     }
 
     // Update is called once per frame
@@ -38,56 +48,83 @@ public class Mouse : MonoBehaviour
             CheckWinLoss();
             if (!manager.userWin)
             {
-                EstablishTarget();
-                ResetAstarAlgorithm();
+                TargetLogic(); 
                 ComputeHexGraph();
                 MoveMouse();
             }
 
             manager.userTurn = true;
+            turnCount++;
         }
     }
 
-    // Randomly choose target for mouse to go to on first pass, then
-    // if target gets clicked choose nearest adjacent targets 
-    void EstablishTarget()
+    // Randomly choose target for mouse to go to on first pass
+    // reassign to nearby target if the initial target is inaccessible
+    // reassign to nearby target if there is a shorter path 
+    void TargetLogic()
     {
-        if (potentialTargetList.Count() == 0)
+        if (retarget || tgtHex.GetComponent<MapHex>().isClicked)
         {
-            potentialTargetList = manager.mapHexes.FindAll(mapHex =>
-                mapHex.GetComponent<MapHex>().isEdge == true &&
-                !mapHex.GetComponent<MapHex>().isClicked);
-            chosenHex = Random.Range(0, potentialTargetList.Count);
-            tgtHex = potentialTargetList[chosenHex];
-        }
-        else
-        {
-            while (tgtHex.GetComponent<MapHex>().isClicked)
+            while (tgtHex.GetComponent<MapHex>().isClicked
+                || tgtHex.GetComponent<MapHex>().inaccessible)
             {
                 List<MapHex> adjHex = manager.GetAdjacentHexes(tgtHex,
                     MapHex.nominalColliderRadius,
                     MapHex.expandedColliderRadius, true);
                 var newTgtHex = adjHex.FirstOrDefault(hex =>
-                    hex.isEdge == true && !hex.isClicked);
+                    hex.isEdge == true && !hex.isClicked && !hex.inaccessible);
                 if (newTgtHex != null)
-                {
                     tgtHex = newTgtHex.gameObject;
-                }
-                else
-                {
+                else  
                     tgtHex = adjHex.FirstOrDefault(hex =>
                         hex.isEdge == true && hex.isClicked).gameObject;
+            }
+            retarget = false;
+        }
+    }
+
+    // Always check for a closer win so the mouse doesn't look stupid
+    // Accomplish this by using the list of potential targets (edge pieces)
+    // and sorting by straight line distance to mouse. If a shorter path is
+    // available, take it
+    void CheckForCloserTarget()
+    {
+        double originalShortestLength = shortestPath.Count();
+        Node originalNextMove = shortestPath[0].ClonePoint();
+        int counter = 0;
+
+        potentialTargetList = potentialTargetList.
+            OrderByDescending(tgt => tgt.GetComponent<MapHex>().node.
+            StraightLineDistanceTo(mouseHex.GetComponent<MapHex>().node))
+            .Reverse().ToList();
+        foreach (GameObject potentialTarget in potentialTargetList)
+        {
+            if (!potentialTarget.GetComponent<MapHex>().isClicked
+                && !potentialTarget.GetComponent<MapHex>().inaccessible
+                && potentialTarget != tgtHex)
+            {
+                tgtHex = potentialTarget;
+                ComputeHexGraph();
+                shortestPath = GetShortestPathAstar();
+                counter++;
+
+                if (shortestPath.Count < originalShortestLength)
+                    break;
+                if (counter > maxSearch)
+                {
+                    shortestPath[0] = originalNextMove;
+                    break;
                 }
             }
         }
-        tgtHex.GetComponent<SpriteRenderer>().color = Color.green;
     }
 
     // Randomly fuck up shortest path by choosing an adjacent hex at random
     void BlunderLogic()
     {
-        if (Random.Range(0, 101) > manager.mouseBlunderPercentage)
+        if(Random.Range(0, 101) > (100-manager.mouseBlunderPercentage))
         {
+            Debug.Log("BLUNDER");
             List<MapHex> adjHex =
                 manager.GetAdjacentHexes(manager.mouse.GetComponent<Mouse>().
                 mouseHex, MapHex.nominalColliderRadius,
@@ -97,24 +134,23 @@ public class Mouse : MonoBehaviour
     }
 
     // Move mouse in direction of shortest path. If shortest path undetermined
-    // i.e. target is unreachable, then randomize movement and retarget on next
-    // turn
+    // i.e. target is unreachable, then retarget until you get an accessible
+    // target. If the target is reachable, scan for a closer potential target
+    // to retarget to. Randomly blunder. Make the move
     void MoveMouse()
     {
         shortestPath = GetShortestPathAstar();
-        if (shortestPath.Count() > 1)
+        while (shortestPath.Count() == 0)
         {
-            BlunderLogic();
+            retarget = true;
+            tgtHex.GetComponent<MapHex>().inaccessible = true;
+            TargetLogic();
+            ComputeHexGraph();
+            shortestPath = GetShortestPathAstar();
         }
-        else
-        {
-            potentialTargetList.Clear(); // Force retargeting
-            List<MapHex> adjHex =
-                manager.GetAdjacentHexes(manager.mouse.GetComponent<Mouse>().
-                mouseHex, MapHex.nominalColliderRadius,
-                MapHex.expandedColliderRadius);
-            shortestPath.Add(adjHex[Random.Range(0, adjHex.Count)].node);
-        }
+        if (shortestPath.Count > 1 && turnCount > 2)
+            CheckForCloserTarget();
+        BlunderLogic();
         transform.position = new Vector3(shortestPath[0].Point.X,
             shortestPath[0].Point.Y, transform.position.z);
     }
@@ -140,14 +176,13 @@ public class Mouse : MonoBehaviour
         }
     }
 
-    // Randomly select a target in the event the 
-
     /* BEGIN A* ALGORITHM
 
     ResetAstarAlgorithm loops through the MapHexes saved in the manager
     object and resets their internal parameters
 
-    ComputeHexGraph establishes the connected nodes given that the map
+    ComputeHexGraph resets the nodes data internal to the maphex objects, then
+    establishes the connected nodes given that the map
     changes everytime the user clicks a hex
 
     GetShortestPathAstar calls AstarSeach and BuildShortestPath to actually
@@ -155,9 +190,8 @@ public class Mouse : MonoBehaviour
 
     */
     // ----------------------------------------------------------------------
-    void ResetAstarAlgorithm()
+    void ComputeHexGraph()
     {
-        shortestPath.Clear();
         foreach (GameObject mapHex in manager.mapHexes)
         {
             mapHex.GetComponent<MapHex>().node.MinCostToStart = null;
@@ -166,10 +200,7 @@ public class Mouse : MonoBehaviour
             mapHex.GetComponent<MapHex>().node.NearestToStart = null;
             mapHex.GetComponent<MapHex>().node.Connections.Clear();
         }
-    }
 
-    void ComputeHexGraph()
-    {
         List<Node> nodes = new List<Node>();
         foreach (GameObject mapHex in manager.mapHexes)
         {
@@ -202,7 +233,8 @@ public class Mouse : MonoBehaviour
     }
 
     public List<Node> GetShortestPathAstar()
-    {
+    { 
+        shortestPath.Clear();
         foreach (var node in manager.graphHexes.Nodes)
         {
             node.StraightLineDistanceToEnd =
