@@ -92,3 +92,13 @@ TODO:
     * Mouse AI 
     * Level's / Progression, Two mice two clicks, variable map size
     * animation, mouse rigid body movement, hexes animate up as towers
+
+2/26
+heres what items are remaining from above list:
+enable mouse to go off screen to win
+you win / lose message + retry button
+levels / progression
+animation, rigid body movement 
+
+additional work items:
+add random number of already clicked hexes at start 
