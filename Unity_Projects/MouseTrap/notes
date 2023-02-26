@@ -102,3 +102,4 @@ animation, rigid body movement
 
 additional work items:
 add random number of already clicked hexes at start 
+make camera scale with number of hexes

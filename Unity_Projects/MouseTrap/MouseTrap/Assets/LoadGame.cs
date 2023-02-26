@@ -9,7 +9,8 @@ public class LoadGame : MonoBehaviour
     public GameObject mapHex_Prefab;
     public GameObject mouse_Prefab;
 
-    public int mapRadius = 5;
+    [System.NonSerialized]
+    public int mapRadius = 6;
     //*************************************************************************
 
     /* PRIVATE VARS */
@@ -109,6 +110,20 @@ public class LoadGame : MonoBehaviour
                     }
                 }
             }
+        }
+
+        counter = 0;
+        while (counter < manager.numAlreadyClicked)
+        {
+            List<GameObject> tmp = manager.mapHexes.FindAll(mapHex =>
+                !mapHex.GetComponent<MapHex>().isClicked
+                && mapHex.transform.position != new Vector3(0f,0f,0f));
+            int rnd = Random.Range(0, tmp.Count);
+            tmp[rnd].
+                GetComponent<MapHex>().isClicked = true;
+            tmp[rnd].
+                GetComponent<SpriteRenderer>().color = Color.black;
+            counter++;
         }
     }
 

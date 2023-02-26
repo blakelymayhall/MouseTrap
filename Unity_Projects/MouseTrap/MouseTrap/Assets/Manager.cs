@@ -16,7 +16,10 @@ public class Manager : MonoBehaviour
     public Graph graphHexes = new Graph();
 
     [System.NonSerialized]
-    public int mouseBlunderPercentage = 10;
+    public int mouseBlunderPercentage = 20;
+
+    [System.NonSerialized]
+    public int numAlreadyClicked = 20;
 
     public GameObject wl_menu_prefab;
     public GameObject wl_menu;
@@ -44,8 +47,12 @@ public class Manager : MonoBehaviour
     {
         if (userWin || mouseWin && !wl_menu_loaded)
         {
-            LoadWL_Menu();
-            wl_menu_loaded = true;
+            // Make a picture that is empty around the border to use as canvas
+            // background
+
+
+            //LoadWL_Menu();
+            //wl_menu_loaded = true;
         }
     }
 
