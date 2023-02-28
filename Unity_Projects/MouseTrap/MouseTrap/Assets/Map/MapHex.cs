@@ -37,8 +37,11 @@ public class MapHex : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckMouseOn();
-        CheckForUserClick();
+        if (!manager.userWin && !manager.mouseWin)
+        {
+            CheckMouseOn();
+            CheckForUserClick();
+        }
     }
 
     // Checks if mouse is on the Hex 

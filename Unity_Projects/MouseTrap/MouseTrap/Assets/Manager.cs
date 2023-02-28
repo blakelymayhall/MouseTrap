@@ -19,7 +19,7 @@ public class Manager : MonoBehaviour
     public int mouseBlunderPercentage = 20;
 
     [System.NonSerialized]
-    public int numAlreadyClicked = 20;
+    public int numAlreadyClicked = 23;
 
     public GameObject wl_menu_prefab;
     public GameObject wl_menu;
@@ -51,8 +51,8 @@ public class Manager : MonoBehaviour
             // background
 
 
-            //LoadWL_Menu();
-            //wl_menu_loaded = true;
+            LoadWL_Menu();
+            wl_menu_loaded = true;
         }
     }
 

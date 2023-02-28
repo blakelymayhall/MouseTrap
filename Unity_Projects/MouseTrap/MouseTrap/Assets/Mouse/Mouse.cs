@@ -58,9 +58,7 @@ public class Mouse : MonoBehaviour
         }
     }
 
-    // Randomly choose target for mouse to go to on first pass
     // reassign to nearby target if the initial target is inaccessible
-    // reassign to nearby target if there is a shorter path 
     void TargetLogic()
     {
         if (retarget || tgtHex.GetComponent<MapHex>().isClicked)
@@ -74,10 +72,17 @@ public class Mouse : MonoBehaviour
                 var newTgtHex = adjHex.FirstOrDefault(hex =>
                     hex.isEdge == true && !hex.isClicked && !hex.inaccessible);
                 if (newTgtHex != null)
+                {
                     tgtHex = newTgtHex.gameObject;
-                else  
+                }
+                else
+                {
+                    CheckWinLoss();
+                    if (manager.userWin)
+                        break;
                     tgtHex = adjHex.FirstOrDefault(hex =>
-                        hex.isEdge == true && hex.isClicked).gameObject;
+                        hex.isEdge == true && hex.isClicked).gameObject;   
+                }
             }
             retarget = false;
         }
@@ -108,11 +113,13 @@ public class Mouse : MonoBehaviour
                 shortestPath = GetShortestPathAstar();
                 counter++;
 
-                if (shortestPath.Count < originalShortestLength)
+                if (shortestPath.Count < originalShortestLength &&
+                    shortestPath.Count > 0)
                     break;
                 if (counter > maxSearch)
                 {
-                    shortestPath[0] = originalNextMove;
+                    shortestPath.Clear();
+                    shortestPath.Add(originalNextMove);
                     break;
                 }
             }
@@ -124,7 +131,6 @@ public class Mouse : MonoBehaviour
     {
         if(Random.Range(0, 101) > (100-manager.mouseBlunderPercentage))
         {
-            Debug.Log("BLUNDER");
             List<MapHex> adjHex =
                 manager.GetAdjacentHexes(manager.mouse.GetComponent<Mouse>().
                 mouseHex, MapHex.nominalColliderRadius,
@@ -145,6 +151,8 @@ public class Mouse : MonoBehaviour
             retarget = true;
             tgtHex.GetComponent<MapHex>().inaccessible = true;
             TargetLogic();
+            if (manager.userWin)
+                return;
             ComputeHexGraph();
             shortestPath = GetShortestPathAstar();
         }
@@ -157,7 +165,7 @@ public class Mouse : MonoBehaviour
 
     // Check win/loss condition
     // win condition == mouse reached tgt hex
-    // loss condition == mouse has no moves 
+    // loss condition == mouse has no moves
     void CheckWinLoss()
     {
         if(mouseHex == tgtHex)
@@ -173,6 +181,29 @@ public class Mouse : MonoBehaviour
         if(adjHex.All(hex => hex.isClicked))
         {
             manager.userWin = true;
+        }
+
+        // Test some targets, if all return no path, assume lost
+        potentialTargetList = potentialTargetList.
+            OrderByDescending(tgt => tgt.GetComponent<MapHex>().node.
+            StraightLineDistanceTo(mouseHex.GetComponent<MapHex>().node))
+            .Reverse().ToList();
+        foreach(GameObject potentialTarget in potentialTargetList)
+        {
+            if (!potentialTarget.GetComponent<MapHex>().isClicked
+                && !potentialTarget.GetComponent<MapHex>().inaccessible
+                && potentialTarget != tgtHex)
+            {
+                tgtHex = potentialTarget;
+                ComputeHexGraph();
+                shortestPath = GetShortestPathAstar();
+
+                if (shortestPath.Count != 0)
+                    break;
+                else if (potentialTarget ==
+                    potentialTargetList[potentialTargetList.Count()-1])
+                    manager.userWin = true;
+            }
         }
     }
 
