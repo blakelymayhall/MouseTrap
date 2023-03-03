@@ -42,11 +42,11 @@ public class Mouse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Disallow mouse movement unless its the mouse's turn and the
+        // Disallow mouse movement unless its the mouse's turn and no one won
         if (!manager.userTurn)
         {
             CheckWinLoss();
-            if (!manager.userWin)
+            if (!manager.userWin && !manager.mouseWin)
             {
                 TargetLogic(); 
                 ComputeHexGraph();
@@ -129,7 +129,7 @@ public class Mouse : MonoBehaviour
     // Randomly fuck up shortest path by choosing an adjacent hex at random
     void BlunderLogic()
     {
-        if(Random.Range(0, 101) > (100-manager.mouseBlunderPercentage))
+        if(Random.Range(0, 101) > (100-manager.currentLevel.mouseBlunderPercentage))
         {
             List<MapHex> adjHex =
                 manager.GetAdjacentHexes(manager.mouse.GetComponent<Mouse>().
