@@ -43,12 +43,6 @@ public class WL_Menu : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void KeepPlayingButton()
     {
         if (manager.userWin)
@@ -60,7 +54,6 @@ public class WL_Menu : MonoBehaviour
 
     public void QuitButton()
     {
-        Application.Quit();
-        // Save progress to JSON
+        manager.quit = true;
     }
 }

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 public class Manager : MonoBehaviour
 {
@@ -11,13 +13,14 @@ public class Manager : MonoBehaviour
     [System.NonSerialized] public Graph graphHexes;
     [System.NonSerialized] public Level currentLevel;
     [System.NonSerialized] public GameObject wl_menu;
+    [System.NonSerialized] public int level = 1;
 
     public bool userTurn;
     public bool mouseWin;
     public bool userWin;
     public bool retry;
-    public int level = 1;
-
+    public bool quit;
+    
     public GameObject mapHex_Prefab;
     public GameObject mouse_Prefab;
     public GameObject wl_menu_Prefab;
@@ -29,8 +32,12 @@ public class Manager : MonoBehaviour
     private const float sq3 = 1.7320508075688772935274463415059F;
     private static List<Level> levels = new List<Level>
     {
-        new Level(1,25,11,5), new Level(2,15,10,6)
+        new Level(1,25,11,5),
+        new Level(2,15,10,6),
+        new Level(3,20,8,6)
     };
+
+    private List<int> levelsCompleted = new List<int>();
     //*************************************************************************
 
     // Start is called before the first frame update
@@ -51,6 +58,12 @@ public class Manager : MonoBehaviour
         // Load the game based on the level
         currentLevel = levels[level-1];
         LoadGame(currentLevel);
+
+        // Save the game with the current level
+        levelsCompleted.Add(level - 1);
+        Save();
+
+        Debug.Log(Application.persistentDataPath);
     }
 
     // Update is called once per frame
@@ -63,9 +76,10 @@ public class Manager : MonoBehaviour
         }
 
         if (retry)
-        {
             Retry();
-        }
+     
+        if (quit)
+            QuitGame();
     }
 
     // Method to get all adjacent hexes from a given gameobject
@@ -132,7 +146,7 @@ public class Manager : MonoBehaviour
         wl_menu.GetComponent<Canvas>().planeDistance = 1;
     }
 
-    // Reload the game on the current level
+    // Reload the game on the current level or next level
     void Retry()
     {
         wl_menu_loaded = false;
@@ -150,6 +164,9 @@ public class Manager : MonoBehaviour
     // Generate the Hexes that make the grid 
     void GenerateMap()
     {
+        // Set camera size to accomodate the map
+        Camera.main.orthographicSize = currentLevel.cameraSize;
+
         // Make first hex @ origin
         // Vector should be z = 0 so it shows below mouse
         Vector3 spawnPosition = new Vector3(0f, 0f, 0f);
@@ -261,6 +278,49 @@ public class Manager : MonoBehaviour
         // Spawn the Mouse
         SpawnMouse();
     }
+
+    // Save the game data
+    void Save()
+    {
+        SaveData sd = new SaveData();
+        sd.levelsCompleted = levelsCompleted;
+
+        // Write the save file
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file =
+            File.Create(Application.persistentDataPath + "/gamesave.save");
+        bf.Serialize(file, sd);
+        file.Close();
+    }
+
+    // Load game from file
+    void Load()
+    {
+        SaveData sd = new SaveData();
+
+        // Check for save file
+        if (File.Exists(Application.persistentDataPath + "/gamesave.save"))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file =
+                File.Open(Application.persistentDataPath +
+                                            "/gamesave.save", FileMode.Open);
+            sd = (SaveData)bf.Deserialize(file);
+            levelsCompleted = sd.levelsCompleted;
+            file.Close();
+        }
+        else
+        {
+            Debug.Log("No game saved!");
+        }
+    }
+
+    // Quit the Game
+    void QuitGame()
+    {
+        Save();
+        Application.Quit();
+    }
 }
 
 public class Level
@@ -270,6 +330,7 @@ public class Level
     public int mouseBlunderPercentage;
     public int numAlreadyClicked;
     public int mapRadius;
+    public int noMice;
     public float cameraSize;
 
     public Level(int lvl, int mbp, int numClicked, int mapRad)
@@ -278,6 +339,12 @@ public class Level
         mouseBlunderPercentage = mbp;
         numAlreadyClicked = numClicked;
         mapRadius = mapRad;
-        cameraSize = 25f / 6f * (float) mapRad;
+        cameraSize = 25f / 6f * (float) mapRad  + 3f;
     }
+}
+
+[System.Serializable]
+public class SaveData
+{
+    public List<int> levelsCompleted = new List<int>();
 }
