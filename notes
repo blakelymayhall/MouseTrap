@@ -103,3 +103,12 @@ animation, rigid body movement
 additional work items:
 add random number of already clicked hexes at start 
 make camera scale with number of hexes
+
+Test new gitignore -- should add this and only this
+
+3/8
+- Add esc menu 
+- Save after level complete, not new level start
+- make MainMenu UI larger
+- Add level number to the game 
+- Add multiple mice level 5 

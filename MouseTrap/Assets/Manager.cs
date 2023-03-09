@@ -9,11 +9,13 @@ public class Manager : MonoBehaviour
     /* PUBLIC VARS */
     //*************************************************************************
     [System.NonSerialized] public GameObject mouse;
+    [System.NonSerialized] public GameObject mouse2;
     [System.NonSerialized] public List<GameObject> mapHexes;
     [System.NonSerialized] public Graph graphHexes;
     [System.NonSerialized] public Level currentLevel;
     [System.NonSerialized] public GameObject wl_menu;
     [System.NonSerialized] public static int level = 1;
+    public static List<int> levelsCompleted = new List<int>();
 
     public bool userTurn;
     public bool mouseWin;
@@ -32,12 +34,12 @@ public class Manager : MonoBehaviour
     private const float sq3 = 1.7320508075688772935274463415059F;
     private static List<Level> levels = new List<Level>
     {
-        new Level(1,25,11,5),
-        new Level(2,15,10,6),
-        new Level(3,20,8,6)
+        new Level(1,25,11,5,1),
+        new Level(2,15,10,6,1),
+        new Level(3,20,8,6,1),
+        new Level(4,10,8,7,1),
+        new Level(5,20,14,8,2) // WILL HAVE TWO MICE
     };
-
-    private List<int> levelsCompleted = new List<int>();
     //*************************************************************************
 
     // Start is called before the first frame update
@@ -60,7 +62,8 @@ public class Manager : MonoBehaviour
         LoadGame(currentLevel);
 
         // Save the game with the current level
-        levelsCompleted.Add(level);
+        if(!levelsCompleted.Contains(level))
+            levelsCompleted.Add(level);
         Save();
     }
 
@@ -174,7 +177,7 @@ public class Manager : MonoBehaviour
         mapHexes.Add(originHex);
 
         /*
-        Code stolen from:
+        Some of this stolen from:
         https://www.codeproject.com/
         Articles/1249665/Generation-of-a-hexagonal-tessellation
         */
@@ -261,10 +264,13 @@ public class Manager : MonoBehaviour
     {
         // Make first hex @ origin
         // Vector should be z = -1 so it shows on top of the hexes
-        Vector3 spawnPosition = new Vector3(0f, 0f, -1f);
-        mouse = Instantiate(mouse_Prefab, spawnPosition,
-            Quaternion.identity, GetComponent<Transform>());
-        mouse.name = "Mouse";
+        if (currentLevel.noMice == 1)
+        { 
+            Vector3 spawnPosition = new Vector3(0f, 0f, -1f);
+            mouse = Instantiate(mouse_Prefab, spawnPosition,
+                Quaternion.identity, GetComponent<Transform>());
+            mouse.name = "Mouse";
+        }
     }
 
     // Loads the game given the level input 
@@ -310,12 +316,13 @@ public class Level
     public int noMice;
     public float cameraSize;
 
-    public Level(int lvl, int mbp, int numClicked, int mapRad)
+    public Level(int lvl, int mbp, int numClicked, int mapRad, int numMice)
     {
         level = lvl;
         mouseBlunderPercentage = mbp;
         numAlreadyClicked = numClicked;
         mapRadius = mapRad;
+        noMice = numMice;
         cameraSize = 25f / 6f * (float) mapRad  + 3f;
     }
 }

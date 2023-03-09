@@ -126,7 +126,7 @@ public class Mouse : MonoBehaviour
         }
     }
 
-    // Randomly fuck up shortest path by choosing an adjacent hex at random
+    // Randomly mess up shortest path by choosing an adjacent hex at random
     void BlunderLogic()
     {
         if(Random.Range(0, 101) > (100-manager.currentLevel.mouseBlunderPercentage))

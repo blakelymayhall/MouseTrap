@@ -109,6 +109,7 @@ public class SC_MainMenu : MonoBehaviour
                 File.Open(Application.persistentDataPath +
                                             "/gamesave.save", FileMode.Open);
             sd = (SaveData)bf.Deserialize(file);
+            //Manager.levelsCompleted = sd.levelsCompleted;
 
             file.Close(); 
         }
