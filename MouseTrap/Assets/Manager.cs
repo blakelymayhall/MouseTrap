@@ -13,7 +13,7 @@ public class Manager : MonoBehaviour
     [System.NonSerialized] public Graph graphHexes;
     [System.NonSerialized] public Level currentLevel;
     [System.NonSerialized] public GameObject wl_menu;
-    [System.NonSerialized] public int level = 1;
+    [System.NonSerialized] public static int level = 1;
 
     public bool userTurn;
     public bool mouseWin;
@@ -60,10 +60,8 @@ public class Manager : MonoBehaviour
         LoadGame(currentLevel);
 
         // Save the game with the current level
-        levelsCompleted.Add(level - 1);
+        levelsCompleted.Add(level);
         Save();
-
-        Debug.Log(Application.persistentDataPath);
     }
 
     // Update is called once per frame
@@ -293,28 +291,6 @@ public class Manager : MonoBehaviour
         file.Close();
     }
 
-    // Load game from file
-    void Load()
-    {
-        SaveData sd = new SaveData();
-
-        // Check for save file
-        if (File.Exists(Application.persistentDataPath + "/gamesave.save"))
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream file =
-                File.Open(Application.persistentDataPath +
-                                            "/gamesave.save", FileMode.Open);
-            sd = (SaveData)bf.Deserialize(file);
-            levelsCompleted = sd.levelsCompleted;
-            file.Close();
-        }
-        else
-        {
-            Debug.Log("No game saved!");
-        }
-    }
-
     // Quit the Game
     void QuitGame()
     {
@@ -323,6 +299,7 @@ public class Manager : MonoBehaviour
     }
 }
 
+// Level Type 
 public class Level
 {
 
@@ -343,8 +320,9 @@ public class Level
     }
 }
 
+// Save Data Type
 [System.Serializable]
 public class SaveData
 {
-    public List<int> levelsCompleted = new List<int>();
+    public List<int> levelsCompleted;
 }

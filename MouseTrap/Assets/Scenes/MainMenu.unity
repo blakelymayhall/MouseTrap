@@ -881,7 +881,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1308778330}
         m_TargetAssemblyTypeName: SC_MainMenu, Assembly-CSharp
-        m_MethodName: PlayNowButton
+        m_MethodName: LoadSpecificLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1015,7 +1015,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1308778330}
         m_TargetAssemblyTypeName: SC_MainMenu, Assembly-CSharp
-        m_MethodName: CreditsButton
+        m_MethodName: LoadSpecificLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1152,7 +1152,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 801866273}
-  - component: {fileID: 801866272}
   m_Layer: 5
   m_Name: CreditsMenu
   m_TagString: Untagged
@@ -1160,21 +1159,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &801866272
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 801866271}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ade4d41daed584b4db778e5cefb7d918, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MainMenu: {fileID: 0}
-  CreditsMenu: {fileID: 0}
-  LevelSelectMenu: {fileID: 0}
 --- !u!224 &801866273
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1685,7 +1669,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1308778330}
         m_TargetAssemblyTypeName: SC_MainMenu, Assembly-CSharp
-        m_MethodName: QuitButton
+        m_MethodName: LoadSpecificLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2739,7 +2723,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1308778330}
         m_TargetAssemblyTypeName: SC_MainMenu, Assembly-CSharp
-        m_MethodName: QuitButton
+        m_MethodName: MainMenuButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3033,7 +3017,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1308778330}
         m_TargetAssemblyTypeName: SC_MainMenu, Assembly-CSharp
-        m_MethodName: PlayNowButton
+        m_MethodName: LoadSpecificLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3167,7 +3151,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1308778330}
         m_TargetAssemblyTypeName: SC_MainMenu, Assembly-CSharp
-        m_MethodName: QuitButton
+        m_MethodName: LoadSpecificLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

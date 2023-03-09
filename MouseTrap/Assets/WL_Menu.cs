@@ -46,10 +46,14 @@ public class WL_Menu : MonoBehaviour
     public void KeepPlayingButton()
     {
         if (manager.userWin)
-            manager.level++;
-        
+            Manager.level++;
 
         manager.retry = true;
+    }
+
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void QuitButton()
