@@ -40,6 +40,9 @@ public class WL_Menu : MonoBehaviour
             if (name == "PlayAgain")
                 GetComponentInChildren<Text>().text = "Try Again?";
         }
+        canvas.transform.GetChild(4).gameObject.
+                GetComponent<Text>().text = "Total Clicks:\n" +
+                Manager.numClicks.ToString();
 
     }
 

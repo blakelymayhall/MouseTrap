@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using UnityEngine.UI;
 
 public class Manager : MonoBehaviour
 {
@@ -14,7 +15,8 @@ public class Manager : MonoBehaviour
     [System.NonSerialized] public Graph graphHexes;
     [System.NonSerialized] public Level currentLevel;
     [System.NonSerialized] public GameObject wl_menu;
-    [System.NonSerialized] public static int level = 1;
+    [System.NonSerialized] public static int level = 5;
+    [System.NonSerialized] public static int numClicks = 0;
     public static List<int> levelsCompleted = new List<int>();
 
     public bool userTurn;
@@ -34,17 +36,25 @@ public class Manager : MonoBehaviour
     private const float sq3 = 1.7320508075688772935274463415059F;
     private static List<Level> levels = new List<Level>
     {
-        new Level(1,25,11,5,1),
-        new Level(2,15,10,6,1),
-        new Level(3,20,8,6,1),
-        new Level(4,10,8,7,1),
-        new Level(5,20,14,8,2) // WILL HAVE TWO MICE
+         // level No., blunder %, num clicked, map radii, no mice
+        new Level(1,25,15,7,1),
+        new Level(2,10,10,6,1),
+        new Level(3,10,8,5,1),
+        new Level(4,25,8,4,1),
+        new Level(5,20,14,7,2) 
     };
+    private Canvas canvas;
     //*************************************************************************
 
     // Start is called before the first frame update
     void Start()
     {
+        // Reset numClicks
+        numClicks = 0;
+
+        // Assign canvas
+        canvas = GetComponentInChildren<Canvas>();
+
         // User's turn first
         userTurn = true;
         mouseWin = false;
@@ -176,10 +186,14 @@ public class Manager : MonoBehaviour
         originHex.name = "Hex";
         mapHexes.Add(originHex);
 
+        // Update level label
+        canvas.transform.GetChild(0).gameObject.
+            GetComponent<Text>().text = "Level " + level.ToString();
+
         /*
-        Some of this stolen from:
-        https://www.codeproject.com/
-        Articles/1249665/Generation-of-a-hexagonal-tessellation
+            Some of this stolen from:
+            https://www.codeproject.com/
+            Articles/1249665/Generation-of-a-hexagonal-tessellation
         */
 
         //Spawn scheme: nDR, nDX, nDL, nUL, nUX, End??, UX, nUR
@@ -264,13 +278,36 @@ public class Manager : MonoBehaviour
     {
         // Make first hex @ origin
         // Vector should be z = -1 so it shows on top of the hexes
-        if (currentLevel.noMice == 1)
-        { 
-            Vector3 spawnPosition = new Vector3(0f, 0f, -1f);
-            mouse = Instantiate(mouse_Prefab, spawnPosition,
+        Vector3 spawnPosition = new Vector3(0f, 0f, -1f);
+        mouse = Instantiate(mouse_Prefab, spawnPosition,
+            Quaternion.identity, GetComponent<Transform>());
+        mouse.name = "Mouse";
+        
+
+        if (currentLevel.noMice == 2)
+        {
+            List<MapHex> adjHex =
+                GetAdjacentHexes(mouse, MapHex.nominalColliderRadius,
+                MapHex.expandedColliderRadius);
+
+            mouse2 = Instantiate(mouse_Prefab, spawnPosition,
                 Quaternion.identity, GetComponent<Transform>());
-            mouse.name = "Mouse";
+            mouse2.name = "Mouse2";
+
+            mouse.transform.position = new
+                Vector3(adjHex[Random.Range(0, adjHex.Count)].node.Point.X,
+                adjHex[Random.Range(0, adjHex.Count)].node.Point.Y, -1);
+            mouse2.transform.position = new
+                Vector3(adjHex[Random.Range(0, adjHex.Count)].node.Point.X,
+                adjHex[Random.Range(0, adjHex.Count)].node.Point.Y, -1);
+            while (mouse2.transform.position == mouse.transform.position)
+            {
+                mouse2.transform.position = new
+                    Vector3(adjHex[Random.Range(0, adjHex.Count)].node.Point.X,
+                    adjHex[Random.Range(0, adjHex.Count)].node.Point.Y, -1);
+            }
         }
+
     }
 
     // Loads the game given the level input 

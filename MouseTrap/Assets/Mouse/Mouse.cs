@@ -43,9 +43,9 @@ public class Mouse : MonoBehaviour
     void Update()
     {
         // Disallow mouse movement unless its the mouse's turn and no one won
+        CheckWinLoss();
         if (!manager.userTurn)
         {
-            CheckWinLoss();
             if (!manager.userWin && !manager.mouseWin)
             {
                 TargetLogic(); 
@@ -168,9 +168,15 @@ public class Mouse : MonoBehaviour
     // loss condition == mouse has no moves
     void CheckWinLoss()
     {
-        if(mouseHex == tgtHex)
+        if(mouseHex == tgtHex || mouseHex.GetComponent<MapHex>().isEdge)
         {
             manager.mouseWin = true;
+            return;
+        }
+
+        if (potentialTargetList.All(hex => hex.GetComponent<MapHex>().isClicked))
+        {
+            manager.userWin = true;
             return;
         }
 
@@ -181,6 +187,7 @@ public class Mouse : MonoBehaviour
         if(adjHex.All(hex => hex.isClicked))
         {
             manager.userWin = true;
+            return;
         }
 
         // Test some targets, if all return no path, assume lost

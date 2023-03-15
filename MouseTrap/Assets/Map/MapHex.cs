@@ -76,6 +76,7 @@ public class MapHex : MonoBehaviour
                 {
                     isClicked = true;
                     manager.userTurn = false;
+                    Manager.numClicks++;
                     GetComponent<SpriteRenderer>().color = Color.black;
                 }
                 
