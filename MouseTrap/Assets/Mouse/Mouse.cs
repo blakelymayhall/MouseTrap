@@ -132,8 +132,7 @@ public class Mouse : MonoBehaviour
         if(Random.Range(0, 101) > (100-manager.currentLevel.mouseBlunderPercentage))
         {
             List<MapHex> adjHex =
-                manager.GetAdjacentHexes(manager.mouse.GetComponent<Mouse>().
-                mouseHex, MapHex.nominalColliderRadius,
+                manager.GetAdjacentHexes(mouseHex, MapHex.nominalColliderRadius,
                 MapHex.expandedColliderRadius);
             shortestPath[0] = adjHex[Random.Range(0, adjHex.Count)].node;
         }
@@ -174,15 +173,16 @@ public class Mouse : MonoBehaviour
             return;
         }
 
-        if (potentialTargetList.All(hex => hex.GetComponent<MapHex>().isClicked))
+        if (potentialTargetList.All(hex =>
+            hex.GetComponent<MapHex>().isClicked))
         {
             manager.userWin = true;
             return;
         }
 
         List<MapHex> adjHex =
-                manager.GetAdjacentHexes(manager.mouse.GetComponent<Mouse>().
-                mouseHex, MapHex.nominalColliderRadius,
+                manager.GetAdjacentHexes(mouseHex,
+                MapHex.nominalColliderRadius,
                 MapHex.expandedColliderRadius);
         if(adjHex.All(hex => hex.isClicked))
         {
@@ -263,9 +263,9 @@ public class Mouse : MonoBehaviour
             }
         }
 
-        manager.graphHexes.StartNode = manager.mouse.GetComponent<Mouse>().
+        manager.graphHexes.StartNode = 
             mouseHex.GetComponent<MapHex>().node;
-        manager.graphHexes.EndNode = manager.mouse.GetComponent<Mouse>().
+        manager.graphHexes.EndNode = 
             tgtHex.GetComponent<MapHex>().node;
         manager.graphHexes.Nodes = nodes;
     }

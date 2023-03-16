@@ -10,12 +10,11 @@ public class Manager : MonoBehaviour
     /* PUBLIC VARS */
     //*************************************************************************
     [System.NonSerialized] public GameObject mouse;
-    [System.NonSerialized] public GameObject mouse2;
     [System.NonSerialized] public List<GameObject> mapHexes;
     [System.NonSerialized] public Graph graphHexes;
     [System.NonSerialized] public Level currentLevel;
     [System.NonSerialized] public GameObject wl_menu;
-    [System.NonSerialized] public static int level = 5;
+    [System.NonSerialized] public static int level = 999;
     [System.NonSerialized] public static int numClicks = 0;
     public static List<int> levelsCompleted = new List<int>();
 
@@ -41,7 +40,7 @@ public class Manager : MonoBehaviour
         new Level(2,10,10,6,1),
         new Level(3,10,8,5,1),
         new Level(4,25,8,4,1),
-        new Level(5,20,14,7,2) 
+        new Level(5,20,14,7,1) 
     };
     private Canvas canvas;
     //*************************************************************************
@@ -68,8 +67,15 @@ public class Manager : MonoBehaviour
         graphHexes = new Graph();
 
         // Load the game based on the level
-        currentLevel = levels[level-1];
-        LoadGame(currentLevel);
+        if (level <= 5)
+        {
+            currentLevel = levels[level - 1];
+            LoadGame(currentLevel);
+        }
+        else
+        {
+            QuitGame();
+        }
 
         // Save the game with the current level
         if(!levelsCompleted.Contains(level))
@@ -282,32 +288,6 @@ public class Manager : MonoBehaviour
         mouse = Instantiate(mouse_Prefab, spawnPosition,
             Quaternion.identity, GetComponent<Transform>());
         mouse.name = "Mouse";
-        
-
-        if (currentLevel.noMice == 2)
-        {
-            List<MapHex> adjHex =
-                GetAdjacentHexes(mouse, MapHex.nominalColliderRadius,
-                MapHex.expandedColliderRadius);
-
-            mouse2 = Instantiate(mouse_Prefab, spawnPosition,
-                Quaternion.identity, GetComponent<Transform>());
-            mouse2.name = "Mouse2";
-
-            mouse.transform.position = new
-                Vector3(adjHex[Random.Range(0, adjHex.Count)].node.Point.X,
-                adjHex[Random.Range(0, adjHex.Count)].node.Point.Y, -1);
-            mouse2.transform.position = new
-                Vector3(adjHex[Random.Range(0, adjHex.Count)].node.Point.X,
-                adjHex[Random.Range(0, adjHex.Count)].node.Point.Y, -1);
-            while (mouse2.transform.position == mouse.transform.position)
-            {
-                mouse2.transform.position = new
-                    Vector3(adjHex[Random.Range(0, adjHex.Count)].node.Point.X,
-                    adjHex[Random.Range(0, adjHex.Count)].node.Point.Y, -1);
-            }
-        }
-
     }
 
     // Loads the game given the level input 

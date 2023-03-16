@@ -31,14 +31,22 @@ public class WL_Menu : MonoBehaviour
             canvas.transform.GetChild(2).gameObject.
                 GetComponent<Text>().text = "You Win!";
             if (name == "PlayAgain")
+            {
                 GetComponentInChildren<Text>().text = "Next Level?";
+                if (Manager.level == 5)
+                {
+                    gameObject.SetActive(false);
+                }
+            }
         }
         else
         {
             canvas.transform.GetChild(2).gameObject.
                 GetComponent<Text>().text = "You Lose!";
             if (name == "PlayAgain")
+            {
                 GetComponentInChildren<Text>().text = "Try Again?";
+            }
         }
         canvas.transform.GetChild(4).gameObject.
                 GetComponent<Text>().text = "Total Clicks:\n" +

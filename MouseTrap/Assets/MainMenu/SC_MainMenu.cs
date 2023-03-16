@@ -35,6 +35,8 @@ public class SC_MainMenu : MonoBehaviour
         // Play Now Button has been pressed, here you can initialize your game
         // (For example Load a Scene called GameLevel etc.)
         Manager.level = sd.levelsCompleted.Max();
+        if (Manager.level <= 0)
+            Manager.level = 1;
         UnityEngine.SceneManagement.SceneManager.LoadScene("MT_GameScene");
     }
 

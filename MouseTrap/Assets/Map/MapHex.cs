@@ -51,7 +51,8 @@ public class MapHex : MonoBehaviour
             OverlapPoint(transform.position))
         {
             isMouseOn = true;
-            manager.mouse.GetComponent<Mouse>().mouseHex = transform.gameObject;
+            manager.mouse.GetComponent<Mouse>().mouseHex =
+                transform.gameObject;
         }
         else
         {
